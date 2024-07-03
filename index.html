@@ -9,7 +9,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-<h1>Connect Your Ethereum Wallet k</h1>
+<h1>Connect Your Ethereum Wallet</h1>
 <button id="connectButton">Connect Wallet</button>
 
 <script type="text/javascript">
@@ -24,14 +24,14 @@
                     method: "eth_requestAccounts",
                 });
                 console.log('Address array:', addressArray)
-                const obj = {
-                    status: "👆🏽 Write a message in the text-field above.",
-                    address: addressArray[0],
-                };
+                const address = addressArray[0];
                 const response = await fetch(`http://localhost:8000/save_wallet?user_id=${userId}&address=${address}`);
                 console.log('Request to server sent')
                 console.log('Response:', response)
-                return obj;
+                return {
+                    address,
+                    userId,
+                }
             } catch (err) {
                 console.log('Error:', err)
                 return {
