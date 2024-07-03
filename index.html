@@ -9,37 +9,52 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-<h1>Connect Your Ethereum Wallet</h1>
+<h1>Connect Your Ethereum Wallet k</h1>
 <button id="connectButton">Connect Wallet</button>
 
 <script type="text/javascript">
     async function connectWallet() {
+        // const userId = new URLSearchParams(window.location.search).get('user_id');
+        const userId = 777
         console.log('Button clicked')
-        const providerOptions = {
-            walletconnect: {
-                package: WalletConnectProvider,
-                options: {
-                    infuraId: 'https://mainnet.infura.io/v3/78c8d65c6c854af4bcf0891f14b3b252',
-                },
-            },
-        };
+        if (window.ethereum) {
+            console.log('Ethereum found')
+            try {
+                const addressArray = await window.ethereum.request({
+                    method: "eth_requestAccounts",
+                });
+                console.log('Address array:', addressArray)
+                const obj = {
+                    status: "👆🏽 Write a message in the text-field above.",
+                    address: addressArray[0],
+                };
+                const response = await fetch(`http://localhost:8000/save_wallet?user_id=${userId}&address=${address}`);
+                console.log('Request to server sent')
+                console.log('Response:', response)
+                return obj;
+            } catch (err) {
+                console.log('Error:', err)
+                return {
+                    address: "",
+                    status: "😥 " + err.message,
+                };
+            }
+        } else {
+            console.log('Ethereum not found')
+            return {
+                address: "",
+                status: 'lol'
+            }
 
-        const web3Modal = new Web3Modal({
-            cacheProvider: false,
-            providerOptions,
-        });
-
-        const instance = await web3Modal.connect();
-        const web3 = new Web3(instance);
-
-        const accounts = await web3.eth.getAccounts();
-        console.log('All accounts:', accounts)
-        const address = accounts[0];
-        console.log('Connected with address:', address);
-
-        const userId = new URLSearchParams(window.location.search).get('user_id');
-        console.log('User ID:', userId);
-        fetch(`http://localhost:8000/save_wallet?user_id=${userId}&address=${address}`);
+            // const accounts = await web3.eth.getAccounts();
+            // console.log('All accounts:', accounts)
+            // const address = accounts[0];
+            // console.log('Connected with address:', address);
+            //
+            // const userId = new URLSearchParams(window.location.search).get('user_id');
+            // console.log('User ID:', userId);
+            fetch(`http://localhost:8000/save_wallet?user_id=${userId}&address=${address}`);
+        }
     }
 
     document.getElementById('connectButton').addEventListener('click', connectWallet);
