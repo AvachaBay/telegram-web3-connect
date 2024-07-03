@@ -35,7 +35,7 @@
             const address = accounts[0];
 
             const userId = new URLSearchParams(window.location.search).get('user_id');
-            fetch(`http://localhost:8080/save_wallet?user_id=${userId}&address=${address}`);
+            fetch(`http://localhost:8000/save_wallet?user_id=${userId}&address=${address}`);
         }
 
         document.getElementById('connectButton').addEventListener('click', connectWallet);
